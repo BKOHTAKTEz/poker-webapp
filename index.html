@@ -10,30 +10,23 @@
             font-family: 'Segoe UI', Arial, sans-serif; 
             background: linear-gradient(135deg, #0f0f23, #1e293b);
             color: white; min-height: 100vh; 
-            display: flex; flex-direction: column; align-items: center;
         }
-        .header { text-align: center; padding: 30px 20px; }
+        .header { text-align: center; padding: 20px; }
         #balance { 
             background: linear-gradient(45deg, #10B981, #059669);
-            display: inline-block; padding: 12px 25px; 
-            border-radius: 30px; font-weight: bold; margin: 10px 0;
+            display: inline-block; padding: 12px 25px; border-radius: 30px; 
+            font-weight: bold; margin: 10px 0;
         }
         .lobby { 
-            max-width: 500px; width: 90%; 
-            background: rgba(255,255,255,0.1); 
-            border-radius: 25px; padding: 40px; text-align: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5); backdrop-filter: blur(10px);
-        }
-        .empty-state { 
-            font-size: 18px; opacity: 0.8; margin: 20px 0;
-            color: #9CA3AF;
+            max-width: 500px; margin: 20px auto; width: 90%;
+            background: rgba(255,255,255,0.1); border-radius: 25px; 
+            padding: 40px; text-align: center; backdrop-filter: blur(10px);
         }
         .create-btn { 
             background: linear-gradient(45deg, #8B5CF6, #7C3AED); 
-            color: white; border: none; padding: 20px 40px;
-            border-radius: 25px; font-size: 18px; font-weight: bold;
-            cursor: pointer; width: 100%; margin: 20px 0;
-            transition: all 0.3s;
+            color: white; border: none; padding: 20px 40px; border-radius: 25px;
+            font-size: 18px; font-weight: bold; cursor: pointer; width: 100%;
+            transition: all 0.3s; margin: 20px 0;
         }
         .create-btn:hover { transform: scale(1.05); }
         .game-screen { display: none; }
@@ -41,75 +34,113 @@
             max-width: 500px; margin: 20px auto; width: 90%;
             background: radial-gradient(circle, #1e3a8a, #0f0f23);
             border-radius: 25px; padding: 30px; text-align: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+        .pot { 
+            background: linear-gradient(45deg, #10B981, #059669);
+            color: black; padding: 15px 30px; border-radius: 20px;
+            font-size: 20px; font-weight: bold; margin: 20px 0;
+        }
+        .cards { display: flex; justify-content: center; gap: 10px; margin: 20px 0; }
+        .card { 
+            width: 55px; height: 80px; background: white; 
+            border-radius: 10px; display: flex; flex-direction: column;
+            justify-content: space-between; padding: 5px; font-weight: bold;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
         }
         .action-bar { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
-        .btn { padding: 15px 25px; border: none; border-radius: 25px;
-            font-size: 16px; font-weight: bold; cursor: pointer; min-width: 120px; }
+        .btn { 
+            padding: 15px 25px; border: none; border-radius: 25px;
+            font-size: 16px; font-weight: bold; cursor: pointer; min-width: 120px;
+            transition: all 0.3s;
+        }
         .fold { background: linear-gradient(45deg, #EF4444, #dc2626); color: white; }
         .call { background: linear-gradient(45deg, #10B981, #059669); color: white; }
         .raise { background: linear-gradient(45deg, #3b82f6, #1d4ed8); color: white; }
         .btn:hover { transform: translateY(-3px) scale(1.05); }
+        .status { 
+            background: rgba(255,255,255,0.1); padding: 15px; 
+            border-radius: 15px; margin: 20px 0; backdrop-filter: blur(10px);
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>🃏 Poker Lobby</h1>
+        <h1>🃏 Poker Bot</h1>
         <div id="balance">Баланс: 10,000 фишек</div>
     </div>
 
-    <!-- ПУСТОЕ ЛОББИ -->
+    <!-- ЛОББИ (показывается сразу) -->
     <div class="lobby" id="lobby">
-        <h2>🏠 Добро пожаловать!</h2>
-        <p class="empty-state">Пока нет активных игр...</p>
-        <button class="create-btn" onclick="createFirstGame()">
-            🚀 Создать первую игру
+        <h2>🏠 Poker Lobby</h2>
+        <p style="opacity: 0.8; margin: 20px 0;">Создай свою игру!</p>
+        <button class="create-btn" onclick="startGame()">
+            🚀 Начать игру
         </button>
-        <p style="font-size: 14px; opacity: 0.6;">Стань первым игроком!</p>
     </div>
 
     <!-- ИГРА (скрыта) -->
     <div class="table game-screen" id="gameScreen">
-        <div id="status">🎮 Игра началась!</div>
+        <div class="status" id="status">🎮 Ваша очередь действовать</div>
+        <div class="pot" id="pot">Банк: 1,250 фишек</div>
+        <div class="cards" id="communityCards">
+            <div class="card">♠️<br>A</div>
+            <div class="card">♥️<br>K</div>
+            <div class="card">♦️<br>Q</div>
+        </div>
         <div class="action-bar" id="actions">
             <button class="btn fold" onclick="sendAction('fold')">🗑️ Фолд</button>
-            <button class="btn call" onclick="sendAction('call')">✅ Колл</button>
-            <button class="btn raise" onclick="sendAction('raise')">📈 Рейз</button>
+            <button class="btn call" onclick="sendAction('call')">✅ Колл (50)</button>
+            <button class="btn raise" onclick="sendAction('raise')">📈 Рейз x2</button>
         </div>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
-        tg.MainButton.setText("🏠 В лобби").setColor('#10B981').show().onClick(showLobby);
+        
+        // MainButton для возврата в лобби
+        tg.MainButton.setText("🏠 В лобби")
+            .setColor('#10B981')
+            .show()
+            .onClick(showLobby);
 
         const user = tg.initDataUnsafe?.user || {};
-        document.getElementById('balance').textContent = `Баланс: ${user.username ? '@' + user.username : '10,000'} фишек`;
+        document.getElementById('balance').textContent = 
+            `Баланс: 10,000 фишек (${user.first_name || 'Игрок'})`;
 
-        function createFirstGame() {
-            tg.sendData(JSON.stringify({ action: 'create_room' }));
-            showGame();
+        // ✅ НАЧАТЬ ИГРУ (НЕ ждём ответа бота!)
+        function startGame() {
+            console.log("🚀 Игра началась!");
+            showGameScreen();
+            tg.sendData(JSON.stringify({ action: 'start_game' }));
+            tg.showAlert("🎮 Игра началась!");
         }
 
-        function showGame() {
+        // ✅ ПОКАЗАТЬ ИГРОВОЙ ЭКРАН
+        function showGameScreen() {
             document.getElementById('lobby').style.display = 'none';
             document.getElementById('gameScreen').style.display = 'block';
-            tg.MainButton.setText("🏠 В лобби");
+            document.getElementById('status').textContent = '🎮 Ваша очередь!';
         }
 
+        // ✅ ВЕРНУТЬСЯ В ЛОББИ
         function showLobby() {
             document.getElementById('lobby').style.display = 'block';
             document.getElementById('gameScreen').style.display = 'none';
-            tg.MainButton.setText("🚀 Создать игру");
         }
 
+        // ✅ ОТПРАВИТЬ ДЕЙСТВИЕ
         function sendAction(action) {
             tg.sendData(JSON.stringify({ action: action }));
-            tg.showAlert(`${action.toUpperCase()} отправлено!`);
-            document.getElementById('status').textContent = `${action.toUpperCase()}!`;
+            document.getElementById('status').textContent = 
+                `✅ ${action.toUpperCase()} выполнено!`;
+            tg.showAlert(`${action.toUpperCase()} отправлено боту!`);
         }
 
-        tg.MainButton.onClick(createFirstGame);
+        // Автозапуск лобби при загрузке
+        window.onload = () => {
+            console.log("✅ WebApp загружен");
+        };
     </script>
 </body>
 </html>
