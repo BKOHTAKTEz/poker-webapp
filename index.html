@@ -12,219 +12,188 @@
             color: white; min-height: 100vh; 
         }
         .header { text-align: center; padding: 20px; background: rgba(0,0,0,0.3); }
-        #balance { 
-            background: linear-gradient(45deg, #10B981, #059669);
-            display: inline-block; padding: 12px 25px; border-radius: 30px; 
-            font-weight: bold; margin: 10px 0;
-        }
-        .container { max-width: 500px; margin: 0 auto; padding: 20px; }
-        
-        /* ЛОББИ */
-        .lobby { text-align: center; display: block; }
-        .lobby h2 { margin: 30px 0 20px 0; }
-        .play-btn { 
+        .container { max-width: 450px; margin: 0 auto; padding: 20px; }
+        .lobby { text-align: center; }
+        .lobby h2 { margin: 40px 0 20px 0; font-size: 28px; }
+        .big-btn { 
             background: linear-gradient(45deg, #8B5CF6, #7C3AED); 
-            color: white; border: none; padding: 25px 50px; border-radius: 30px;
+            color: white; border: none; padding: 25px 40px; border-radius: 25px;
             font-size: 20px; font-weight: bold; cursor: pointer; width: 100%;
-            margin: 30px 0; transition: all 0.3s;
+            margin: 25px 0; transition: all 0.3s; box-shadow: 0 10px 30px rgba(139,92,246,0.4);
         }
-        
-        /* КОМНАТА */
-        .room { display: none; text-align: center; }
-        .room-code { 
-            background: linear-gradient(45deg, #3b82f6, #1d4ed8); 
-            color: white; padding: 15px 30px; border-radius: 20px;
-            font-size: 24px; font-weight: bold; margin: 20px 0; letter-spacing: 5px;
-        }
-        .players-waiting { 
-            background: rgba(255,255,255,0.1); padding: 25px; border-radius: 20px; margin: 20px 0;
-        }
-        .player-slot { 
-            display: inline-block; width: 60px; height: 60px; 
-            background: rgba(16,185,129,0.3); border-radius: 50%; margin: 5px;
-            position: relative; transition: all 0.3s;
-        }
-        .player-slot.active { background: #10B981; transform: scale(1.1); }
-        .player-slot .player-avatar { 
-            width: 40px; height: 40px; border-radius: 50%; 
-            background: #fff; margin: 10px auto; 
-        }
-        .waiting-animation { animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
-        
-        /* ИГРА */
-        .game { display: none; }
-        .table { background: radial-gradient(circle, #1e3a8a, #0f0f23); border-radius: 25px; padding: 30px; }
-        .status { background: rgba(255,255,255,0.1); padding: 20px; border-radius: 15px; margin: 20px 0; }
-        .pot { background: linear-gradient(45deg, #F59E0B, #D97706); color: black; padding: 20px; border-radius: 20px; font-size: 22px; font-weight: bold; margin: 20px 0; }
-        .cards { display: flex; justify-content: center; gap: 12px; margin: 30px 0; }
-        .card { width: 60px; height: 90px; background: white; border-radius: 12px; padding: 8px; font-weight: bold; box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
-        .action-bar { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 30px; }
-        .btn { padding: 18px 30px; border: none; border-radius: 25px; font-size: 16px; font-weight: bold; cursor: pointer; min-width: 130px; transition: all 0.3s; }
-        .fold { background: linear-gradient(45deg, #EF4444, #dc2626); color: white; }
-        .call { background: linear-gradient(45deg, #10B981, #059669); color: white; }
-        .raise { background: linear-gradient(45deg, #3b82f6, #1d4ed8); color: white; }
-        .btn:hover { transform: translateY(-3px) scale(1.05); }
-        
+        .big-btn:hover { transform: scale(1.05); }
+        .big-btn:active { transform: scale(0.98); }
         .screen { display: none; }
         .screen.active { display: block; }
+        .room-code { 
+            background: linear-gradient(45deg, #10B981, #059669); 
+            color: black; padding: 20px 30px; border-radius: 20px;
+            font-size: 28px; font-weight: bold; margin: 25px 0; letter-spacing: 4px;
+        }
+        .players-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin: 30px 0; }
+        .player-slot { 
+            width: 70px; height: 70px; border-radius: 50%; 
+            background: rgba(255,255,255,0.1); border: 3px solid rgba(255,255,255,0.2);
+            display: flex; align-items: center; justify-content: center; font-size: 24px;
+            transition: all 0.3s;
+        }
+        .player-slot.active { 
+            background: #10B981; border-color: #059669; transform: scale(1.2);
+        }
+        .waiting-text { 
+            background: rgba(255,255,255,0.1); padding: 20px; border-radius: 15px; 
+            font-size: 18px; text-align: center; margin: 20px 0; animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>🃏 Poker Pro</h1>
-        <div id="balance">Баланс: 10,000 фишек</div>
         <div>Комната: <span id="roomId">-----</span></div>
     </div>
 
     <div class="container">
         <!-- ЛОББИ -->
         <div class="lobby screen active" id="lobbyScreen">
-            <h2>🎮 Создать комнату</h2>
-            <p style="opacity: 0.8; margin: 20px 0;">Приглашайте друзей по коду комнаты</p>
-            <button class="play-btn" onclick="createRoom()">
-                🚀 Создать комнату
-            </button>
-            <p style="font-size: 14px; opacity: 0.6;">Макс. 8 игроков</p>
-        </div>
-
-        <!-- ОЖИДАНИЕ ИГРОКОВ -->
-        <div class="room screen" id="roomScreen">
-            <h2>🎯 Комната создана!</h2>
-            <div class="room-code" id="roomCode">ABC123</div>
-            <p style="opacity: 0.8;">Поделитесь кодом с друзьями:</p>
-            <div class="players-waiting">
-                <h3>Игроки (1/8)</h3>
-                <div id="playerSlots"></div>
-                <div style="margin-top: 20px;">
-                    <span class="waiting-animation">⏳ Ожидание игроков...</span>
-                </div>
-            </div>
-            <button class="play-btn" onclick="startGameWhenReady()" id="startBtn" style="display: none;">
-                🎮 Начать игру
+            <h2>🎮 Создать игру</h2>
+            <p style="opacity: 0.8; margin: 20px 0 40px 0; font-size: 16px;">
+                Создайте комнату и ждите друзей
+            </p>
+            <button class="big-btn" onclick="createRoom()">
+                🚀 СОЗДАТЬ КОМНАТУ
             </button>
         </div>
 
-        <!-- ИГРА -->
-        <div class="game screen" id="gameScreen">
-            <div class="table">
-                <div class="status" id="gameStatus">Игра началась!</div>
-                <div class="pot" id="pot">Банк: 400 фишек</div>
-                <div class="cards" id="communityCards"></div>
-                <div class="action-bar" id="actionButtons">
-                    <button class="btn fold" onclick="playerAction('fold')">🗑️ Фолд</button>
-                    <button class="btn call" onclick="playerAction('call')">✅ Колл (50)</button>
-                    <button class="btn raise" onclick="playerAction('raise')">📈 Рейз</button>
-                </div>
+        <!-- КОМНАТА -->
+        <div class="screen" id="roomScreen">
+            <h2 style="text-align: center; margin: 20px 0;">✅ Комната готова!</h2>
+            <div class="room-code" id="roomCode">ГЕНЕРИРУЕТСЯ...</div>
+            <p style="opacity: 0.9; text-align: center; margin: 15px 0;">
+                Поделитесь кодом с друзьями
+            </p>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <h3 style="margin-bottom: 20px;">Игроки (1/8)</h3>
+                <div class="players-grid" id="playerSlots"></div>
             </div>
+            
+            <div class="waiting-text" id="waitingText">
+                ⏳ Ожидание игроков... (3/8)
+            </div>
+            
+            <button class="big-btn" onclick="startGame()" id="startGameBtn" style="display: none;">
+                🎮 НАЧАТЬ ИГРУ
+            </button>
+            
+            <button class="big-btn" onclick="showLobby()" style="background: #6B7280; margin-top: 15px;">
+                ← Новая комната
+            </button>
         </div>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
-        tg.MainButton.setText("🏠 В лобби").setColor('#10B981').onClick(() => showScreen('lobbyScreen'));
+        tg.MainButton.setText("🏠 Главное меню").setColor('#6B7280').show();
 
-        let room = {
-            id: '',
+        let currentRoom = {
+            code: '',
             players: 1,
-            maxPlayers: 8,
-            ready: false
+            maxPlayers: 8
         };
 
-        const user = tg.initDataUnsafe?.user || {};
-        document.getElementById('balance').textContent = `Баланс: 10,000 (${user.first_name || 'Игрок'})`;
-
-        // Создать комнату
+        // ✅ ГЛАВНАЯ ФУНКЦИЯ - СОЗДАНИЕ КОМНАТЫ
         function createRoom() {
-            tg.HapticFeedback.impactOccurred('heavy');
+            console.log("🔥 КНОПКА НАЖАТА - СОЗДАЁМ КОМНАТУ!");
             
-            // Генерация кода комнаты
-            room.id = 'ROOM' + Math.random().toString(36).substr(2, 4).toUpperCase();
-            room.players = 1;
+            tg.HapticFeedback.impactOccurred("heavy");
             
-            document.getElementById('roomCode').textContent = room.id;
-            document.getElementById('roomId').textContent = room.id;
+            // Генерация уникального кода
+            currentRoom.code = "ROOM" + Math.random().toString(36).substr(2, 4).toUpperCase();
+            currentRoom.players = 1;
             
+            // Обновляем UI
+            document.getElementById('roomCode').textContent = currentRoom.code;
+            document.getElementById('roomId').textContent = currentRoom.code;
+            
+            // Переход на экран комнаты
             showScreen('roomScreen');
+            
+            // Обновляем слоты игроков
             updatePlayerSlots();
             
-            tg.showAlert(`✅ Комната ${room.id} создана!\nПоделитесь кодом с друзьями!`);
+            tg.showAlert(`✅ Комната ${currentRoom.code} создана!`);
             
             // Симуляция подключения игроков
-            simulatePlayersJoining();
+            simulatePlayerJoining();
         }
 
-        // Симуляция подключения игроков
-        function simulatePlayersJoining() {
-            let joinInterval = setInterval(() => {
-                if (room.players < room.maxPlayers) {
-                    room.players++;
-                    updatePlayerSlots();
-                    tg.HapticFeedback.notificationOccurred('error');
-                    
-                    if (room.players >= 4) { // Минимум 4 игрока
-                        document.getElementById('startBtn').style.display = 'block';
-                    }
-                } else {
-                    clearInterval(joinInterval);
+        // ✅ СИМУЛЯЦИЯ ПОДКЛЮЧЕНИЯ ИГРОКОВ
+        function simulatePlayerJoining() {
+            let playerCount = 1;
+            const interval = setInterval(() => {
+                playerCount++;
+                currentRoom.players = playerCount;
+                updatePlayerSlots();
+                updateWaitingText();
+                
+                tg.HapticFeedback.notificationOccurred("error");
+                
+                if (playerCount >= 4) {
+                    document.getElementById('startGameBtn').style.display = 'block';
+                    clearInterval(interval);
+                } else if (playerCount >= 8) {
+                    clearInterval(interval);
                 }
-            }, 3000); // Игрок каждые 3 секунды
+            }, 2000); // Игрок каждые 2 секунды
         }
 
-        // Обновить слоты игроков
+        // ✅ ОБНОВИТЬ СЛОТЫ ИГРОКОВ
         function updatePlayerSlots() {
             const slots = document.getElementById('playerSlots');
             slots.innerHTML = '';
             
-            for (let i = 0; i < room.maxPlayers; i++) {
+            for (let i = 0; i < currentRoom.maxPlayers; i++) {
                 const slot = document.createElement('div');
-                slot.className = `player-slot ${i < room.players ? 'active' : ''}`;
-                if (i < room.players) {
-                    slot.innerHTML = '<div class="player-avatar"></div>';
+                slot.className = `player-slot ${i < currentRoom.players ? 'active' : ''}`;
+                if (i < currentRoom.players) {
+                    slot.textContent = '👤';
                 }
                 slots.appendChild(slot);
             }
         }
 
-        // Начать игру
-        function startGameWhenReady() {
-            tg.HapticFeedback.impactOccurred('heavy');
-            showScreen('gameScreen');
-            document.getElementById('gameStatus').textContent = '🎮 Раздача карт...';
-            
-            setTimeout(() => {
-                document.getElementById('gameStatus').textContent = '✅ Ваша очередь действовать!';
-                document.getElementById('actionButtons').style.display = 'flex';
-            }, 1500);
+        // ✅ ОБНОВИТЬ ТЕКСТ ОЖИДАНИЯ
+        function updateWaitingText() {
+            document.getElementById('waitingText').textContent = 
+                `⏳ Ожидание игроков... (${currentRoom.players}/8)`;
         }
 
-        // Действия игрока
-        function playerAction(action) {
-            tg.HapticFeedback.impactOccurred('heavy');
-            document.getElementById('actionButtons').style.display = 'none';
-            
-            const messages = {
-                'fold': '🗑️ Вы сбросили карты!',
-                'call': '✅ Колл выполнен!',
-                'raise': '📈 Рейз выполнен!'
-            };
-            
-            document.getElementById('gameStatus').textContent = messages[action];
-            
-            setTimeout(() => {
-                showScreen('roomScreen');
-                tg.showAlert(`${action.toUpperCase()}! Новая раздача через 3 сек...`);
-                setTimeout(createRoom, 3000);
-            }, 2000);
+        // ✅ НАЧАТЬ ИГРУ
+        function startGame() {
+            tg.HapticFeedback.impactOccurred("heavy");
+            tg.showAlert("🎮 Игра началась!");
+            // Пока просто алерт - игру добавим позже
+            showScreen('lobbyScreen');
         }
 
-        // Показать экран
+        // ✅ ПОКАЗАТЬ ЛОББИ
+        function showLobby() {
+            showScreen('lobbyScreen');
+        }
+
+        // ✅ ПЕРЕКЛЮЧЕНИЕ ЭКРАНОВ
         function showScreen(screenId) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
             document.getElementById(screenId).classList.add('active');
         }
 
+        // ✅ КОНСОЛЬ ДЛЯ ОТЛАДКИ
+        console.log("✅ WebApp загружен. Нажмите 'СОЗДАТЬ КОМНАТУ'");
+        
         tg.ready();
     </script>
 </body>
