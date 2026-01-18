@@ -3,99 +3,53 @@
 <head>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Poker Bot - Лобби</title>
+    <title>Poker Bot</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             font-family: 'Segoe UI', Arial, sans-serif; 
             background: linear-gradient(135deg, #0f0f23, #1e293b);
             color: white; min-height: 100vh; 
+            display: flex; flex-direction: column; align-items: center;
         }
-        .header { 
-            text-align: center; padding: 20px; 
-            background: rgba(0,0,0,0.3); backdrop-filter: blur(10px);
-        }
+        .header { text-align: center; padding: 30px 20px; }
         #balance { 
             background: linear-gradient(45deg, #10B981, #059669);
             display: inline-block; padding: 12px 25px; 
             border-radius: 30px; font-weight: bold; margin: 10px 0;
         }
         .lobby { 
-            max-width: 600px; margin: 20px auto; 
-            background: radial-gradient(circle, #1e3a8a, #0f0f23);
-            border-radius: 25px; padding: 30px; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-        }
-        .room { 
+            max-width: 500px; width: 90%; 
             background: rgba(255,255,255,0.1); 
-            padding: 20px; margin: 15px 0; 
-            border-radius: 15px; cursor: pointer;
-            transition: all 0.3s; backdrop-filter: blur(10px);
-            border: 2px solid transparent;
+            border-radius: 25px; padding: 40px; text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5); backdrop-filter: blur(10px);
         }
-        .room:hover { 
-            background: rgba(255,255,255,0.2); 
-            transform: translateY(-2px);
-            border-color: #10B981;
+        .empty-state { 
+            font-size: 18px; opacity: 0.8; margin: 20px 0;
+            color: #9CA3AF;
         }
-        .room-header { 
-            display: flex; justify-content: space-between; 
-            align-items: center; margin-bottom: 10px;
+        .create-btn { 
+            background: linear-gradient(45deg, #8B5CF6, #7C3AED); 
+            color: white; border: none; padding: 20px 40px;
+            border-radius: 25px; font-size: 18px; font-weight: bold;
+            cursor: pointer; width: 100%; margin: 20px 0;
+            transition: all 0.3s;
         }
-        .room-title { font-size: 20px; font-weight: bold; }
-        .room-players { 
-            background: #10B981; color: black; 
-            padding: 5px 12px; border-radius: 20px; 
-            font-size: 14px; font-weight: bold;
-        }
-        .room-status { 
-            display: flex; gap: 10px; font-size: 14px; 
-            opacity: 0.8; flex-wrap: wrap;
-        }
-        .status-active { color: #10B981; }
-        .status-full { color: #EF4444; }
+        .create-btn:hover { transform: scale(1.05); }
         .game-screen { display: none; }
         .table { 
-            max-width: 500px; margin: 20px auto; 
+            max-width: 500px; margin: 20px auto; width: 90%;
             background: radial-gradient(circle, #1e3a8a, #0f0f23);
             border-radius: 25px; padding: 30px; text-align: center;
             box-shadow: 0 20px 40px rgba(0,0,0,0.5);
         }
-        .pot { 
-            background: linear-gradient(45deg, #10B981, #059669);
-            color: black; padding: 15px 30px; border-radius: 20px;
-            font-size: 20px; font-weight: bold; margin: 20px 0;
-            box-shadow: 0 10px 30px rgba(16,185,129,0.4);
-        }
-        .cards { display: flex; justify-content: center; gap: 10px; margin: 20px 0; }
-        .card { 
-            width: 55px; height: 80px; background: white; 
-            border-radius: 10px; display: flex; flex-direction: column;
-            justify-content: space-between; padding: 5px; font-weight: bold;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-        }
-        .action-bar { 
-            display: flex; gap: 15px; justify-content: center; margin-top: 30px;
-            flex-wrap: wrap;
-        }
-        .btn { 
-            padding: 15px 25px; border: none; border-radius: 25px;
-            font-size: 16px; font-weight: bold; cursor: pointer;
-            transition: all 0.3s; min-width: 120px;
-        }
+        .action-bar { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+        .btn { padding: 15px 25px; border: none; border-radius: 25px;
+            font-size: 16px; font-weight: bold; cursor: pointer; min-width: 120px; }
         .fold { background: linear-gradient(45deg, #EF4444, #dc2626); color: white; }
         .call { background: linear-gradient(45deg, #10B981, #059669); color: white; }
         .raise { background: linear-gradient(45deg, #3b82f6, #1d4ed8); color: white; }
-        .btn:hover, .room:hover { transform: translateY(-3px) scale(1.02); }
-        .status { 
-            background: rgba(255,255,255,0.1); padding: 15px; 
-            border-radius: 15px; margin: 20px 0; backdrop-filter: blur(10px);
-        }
-        .player-info { text-align: left; max-width: 400px; margin: 0 auto; }
-        .create-room { 
-            background: linear-gradient(45deg, #8B5CF6, #7C3AED); 
-            color: white; width: 100%; margin: 20px 0;
-        }
+        .btn:hover { transform: translateY(-3px) scale(1.05); }
     </style>
 </head>
 <body>
@@ -104,147 +58,58 @@
         <div id="balance">Баланс: 10,000 фишек</div>
     </div>
 
-    <!-- ЛОББИ С КОМНАТАМИ (НАЧАЛЬНЫЙ ЭКРАН) -->
+    <!-- ПУСТОЕ ЛОББИ -->
     <div class="lobby" id="lobby">
-        <h2>🎮 Активные комнаты</h2>
-        
-        <button class="btn create-room" onclick="createRoom()">
-            ➕ Создать комнату
+        <h2>🏠 Добро пожаловать!</h2>
+        <p class="empty-state">Пока нет активных игр...</p>
+        <button class="create-btn" onclick="createFirstGame()">
+            🚀 Создать первую игру
         </button>
-
-        <div class="room" onclick="joinRoom('room1', false)">
-            <div class="room-header">
-                <div class="room-title">Комната #1: Texas Hold'em</div>
-                <div class="room-players">5/8 игроков</div>
-            </div>
-            <div class="room-status">
-                <span class="status-active">🔴 Идёт раздача</span>
-                <span>Банк: 1,250</span>
-                <span>Ставка: 50</span>
-            </div>
-        </div>
-
-        <div class="room" onclick="joinRoom('room2', true)">
-            <div class="room-header">
-                <div class="room-title">Комната #2: High Stakes</div>
-                <div class="room-players">8/8 игроков</div>
-            </div>
-            <div class="room-status">
-                <span class="status-full">✅ Полная</span>
-                <span>Банк: 5,800</span>
-                <span>Наблюдение</span>
-            </div>
-        </div>
-
-        <div class="room" onclick="joinRoom('room3', false)">
-            <div class="room-header">
-                <div class="room-title">Комната #3: New Players</div>
-                <div class="room-players">2/8 игроков</div>
-            </div>
-            <div class="room-status">
-                <span class="status-active">🟡 Ожидание игроков</span>
-                <span>Банк: 0</span>
-                <span>Вход свободный</span>
-            </div>
-        </div>
+        <p style="font-size: 14px; opacity: 0.6;">Стань первым игроком!</p>
     </div>
 
-    <!-- ИГРОВОЙ СТОЛ (скрыт изначально) -->
+    <!-- ИГРА (скрыта) -->
     <div class="table game-screen" id="gameScreen">
-        <div class="status" id="status">Подключение к игре...</div>
-        <div class="pot" id="pot">Банк: 0</div>
-        
-        <div class="cards" id="community-cards"></div>
-        
+        <div id="status">🎮 Игра началась!</div>
         <div class="action-bar" id="actions">
             <button class="btn fold" onclick="sendAction('fold')">🗑️ Фолд</button>
-            <button class="btn call" onclick="sendAction('call')">✅ Колл (50)</button>
-            <button class="btn raise" onclick="sendAction('raise')">📈 Рейз x2</button>
+            <button class="btn call" onclick="sendAction('call')">✅ Колл</button>
+            <button class="btn raise" onclick="sendAction('raise')">📈 Рейз</button>
         </div>
-    </div>
-
-    <div class="player-info">
-        <p>👤 <span id="player-name">Игрок</span></p>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
-        tg.MainButton.setText("🏠 В лобби")
-            .setColor('#10B981')
-            .show()
-            .onClick(showLobby);
+        tg.MainButton.setText("🏠 В лобби").setColor('#10B981').show().onClick(showLobby);
 
-        // Данные игрока
         const user = tg.initDataUnsafe?.user || {};
-        document.getElementById('player-name').textContent = user.first_name || 'Игрок';
+        document.getElementById('balance').textContent = `Баланс: ${user.username ? '@' + user.username : '10,000'} фишек`;
 
-        // Фейковые комнаты (симуляция)
-        const rooms = {
-            room1: { players: 5, max: 8, bank: 1250, bet: 50, status: 'active' },
-            room2: { players: 8, max: 8, bank: 5800, bet: 100, status: 'full' },
-            room3: { players: 2, max: 8, bank: 0, bet: 10, status: 'waiting' }
-        };
+        function createFirstGame() {
+            tg.sendData(JSON.stringify({ action: 'create_room' }));
+            showGame();
+        }
 
-        // Показать лобби
+        function showGame() {
+            document.getElementById('lobby').style.display = 'none';
+            document.getElementById('gameScreen').style.display = 'block';
+            tg.MainButton.setText("🏠 В лобби");
+        }
+
         function showLobby() {
             document.getElementById('lobby').style.display = 'block';
             document.getElementById('gameScreen').style.display = 'none';
-            tg.MainButton.setText("🎮 Играть");
+            tg.MainButton.setText("🚀 Создать игру");
         }
 
-        // Присоединиться к комнате
-        function joinRoom(roomId, spectator = false) {
-            tg.sendData(JSON.stringify({ 
-                action: 'join_room', 
-                room: roomId, 
-                spectator: spectator 
-            }));
-            
-            document.getElementById('lobby').style.display = 'none';
-            document.getElementById('gameScreen').style.display = 'block';
-            
-            setTimeout(() => startGame(spectator), 1000);
-        }
-
-        // Создать комнату
-        function createRoom() {
-            tg.sendData(JSON.stringify({ action: 'create_room' }));
-            document.getElementById('status').textContent = 'Комната создана!';
-        }
-
-        // Начать игру
-        function startGame(isSpectator) {
-            document.getElementById('status').textContent = 
-                isSpectator ? '👁️ Наблюдение за игрой' : '🎮 Ваша очередь!';
-            
-            document.getElementById('pot').style.display = 'block';
-            document.getElementById('pot').textContent = 'Банк: 1,250';
-            document.getElementById('actions').style.display = isSpectator ? 'none' : 'flex';
-            
-            animateCards();
-        }
-
-        // Отправить действие
         function sendAction(action) {
             tg.sendData(JSON.stringify({ action: action }));
-            tg.showAlert(`Действие: ${action}`);
-            document.getElementById('status').textContent = `Действие: ${action}`;
+            tg.showAlert(`${action.toUpperCase()} отправлено!`);
+            document.getElementById('status').textContent = `${action.toUpperCase()}!`;
         }
 
-        // Анимация карт
-        function animateCards() {
-            const cards = ['♠️A', '♥️K', '♦️Q', '♣️J', '♠️10'];
-            const container = document.getElementById('community-cards');
-            container.innerHTML = cards.map(card => 
-                `<div class="card">${card.split('')[0]}<br>${card.split('')[1]}</div>`
-            ).join('');
-        }
-
-        // Инициализация - сразу показываем лобби
-        tg.MainButton.onClick(() => {
-            tg.sendData(JSON.stringify({ action: 'lobby', timestamp: Date.now() }));
-        });
+        tg.MainButton.onClick(createFirstGame);
     </script>
 </body>
 </html>
