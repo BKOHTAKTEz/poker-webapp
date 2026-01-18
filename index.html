@@ -8,122 +8,114 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             font-family: 'Segoe UI', Arial, sans-serif; 
-            background: linear-gradient(135deg, #0f0f23, #1e293b, #1e1b4b);
-            color: white; min-height: 100vh; overflow-x: hidden;
+            background: linear-gradient(135deg, #0f0f23, #1e293b);
+            color: white; min-height: 100vh; 
         }
-        .header { 
-            text-align: center; padding: 20px; 
-            background: rgba(0,0,0,0.3); backdrop-filter: blur(20px);
-        }
+        .header { text-align: center; padding: 20px; background: rgba(0,0,0,0.3); }
         #balance { 
             background: linear-gradient(45deg, #10B981, #059669);
             display: inline-block; padding: 12px 25px; border-radius: 30px; 
-            font-weight: bold; margin: 10px 0; box-shadow: 0 5px 15px rgba(16,185,129,0.4);
+            font-weight: bold; margin: 10px 0;
         }
         .container { max-width: 500px; margin: 0 auto; padding: 20px; }
         
         /* ЛОББИ */
-        .lobby { text-align: center; }
-        .lobby h2 { margin: 30px 0 20px 0; font-size: 28px; }
-        .empty-state { 
-            background: rgba(255,255,255,0.1); padding: 30px; 
-            border-radius: 20px; margin: 20px 0; backdrop-filter: blur(10px);
-            font-size: 16px; opacity: 0.8;
-        }
+        .lobby { text-align: center; display: block; }
+        .lobby h2 { margin: 30px 0 20px 0; }
         .play-btn { 
             background: linear-gradient(45deg, #8B5CF6, #7C3AED); 
             color: white; border: none; padding: 25px 50px; border-radius: 30px;
             font-size: 20px; font-weight: bold; cursor: pointer; width: 100%;
-            margin: 30px 0; transition: all 0.3s; box-shadow: 0 10px 30px rgba(139,92,246,0.4);
+            margin: 30px 0; transition: all 0.3s;
         }
-        .play-btn:hover { transform: translateY(-5px) scale(1.05); }
+        
+        /* КОМНАТА */
+        .room { display: none; text-align: center; }
+        .room-code { 
+            background: linear-gradient(45deg, #3b82f6, #1d4ed8); 
+            color: white; padding: 15px 30px; border-radius: 20px;
+            font-size: 24px; font-weight: bold; margin: 20px 0; letter-spacing: 5px;
+        }
+        .players-waiting { 
+            background: rgba(255,255,255,0.1); padding: 25px; border-radius: 20px; margin: 20px 0;
+        }
+        .player-slot { 
+            display: inline-block; width: 60px; height: 60px; 
+            background: rgba(16,185,129,0.3); border-radius: 50%; margin: 5px;
+            position: relative; transition: all 0.3s;
+        }
+        .player-slot.active { background: #10B981; transform: scale(1.1); }
+        .player-slot .player-avatar { 
+            width: 40px; height: 40px; border-radius: 50%; 
+            background: #fff; margin: 10px auto; 
+        }
+        .waiting-animation { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
         
         /* ИГРА */
         .game { display: none; }
-        .table { 
-            background: radial-gradient(circle, #1e3a8a, #0f0f23); 
-            border-radius: 25px; padding: 30px; margin: 20px 0; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-        }
-        .status { 
-            background: rgba(255,255,255,0.1); padding: 20px; 
-            border-radius: 15px; text-align: center; font-size: 18px; 
-            margin-bottom: 20px; backdrop-filter: blur(10px);
-        }
-        .pot { 
-            background: linear-gradient(45deg, #F59E0B, #D97706); 
-            color: black; padding: 20px 40px; border-radius: 25px;
-            font-size: 24px; font-weight: bold; margin: 20px 0; text-align: center;
-            box-shadow: 0 10px 30px rgba(245,158,11,0.4);
-        }
-        .cards { display: flex; justify-content: center; gap: 12px; margin: 30px 0; flex-wrap: wrap; }
-        .card { 
-            width: 60px; height: 90px; background: linear-gradient(145deg, #fff, #f0f0f0); 
-            border-radius: 12px; display: flex; flex-direction: column; justify-content: space-between;
-            padding: 8px; font-weight: bold; font-size: 14px; text-align: center;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3); transition: transform 0.3s;
-        }
-        .card:hover { transform: translateY(-5px) rotate(5deg); }
-        .suit-spade, .suit-club { color: #000; }
-        .suit-heart, .suit-diamond { color: #e53e3e; }
-        
-        .action-bar { 
-            display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;
-            margin-top: 30px;
-        }
-        .btn { 
-            padding: 18px 30px; border: none; border-radius: 25px;
-            font-size: 16px; font-weight: bold; cursor: pointer; min-width: 130px;
-            transition: all 0.3s; box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-        }
+        .table { background: radial-gradient(circle, #1e3a8a, #0f0f23); border-radius: 25px; padding: 30px; }
+        .status { background: rgba(255,255,255,0.1); padding: 20px; border-radius: 15px; margin: 20px 0; }
+        .pot { background: linear-gradient(45deg, #F59E0B, #D97706); color: black; padding: 20px; border-radius: 20px; font-size: 22px; font-weight: bold; margin: 20px 0; }
+        .cards { display: flex; justify-content: center; gap: 12px; margin: 30px 0; }
+        .card { width: 60px; height: 90px; background: white; border-radius: 12px; padding: 8px; font-weight: bold; box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+        .action-bar { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 30px; }
+        .btn { padding: 18px 30px; border: none; border-radius: 25px; font-size: 16px; font-weight: bold; cursor: pointer; min-width: 130px; transition: all 0.3s; }
         .fold { background: linear-gradient(45deg, #EF4444, #dc2626); color: white; }
         .call { background: linear-gradient(45deg, #10B981, #059669); color: white; }
         .raise { background: linear-gradient(45deg, #3b82f6, #1d4ed8); color: white; }
-        .btn:active { transform: scale(0.98); }
+        .btn:hover { transform: translateY(-3px) scale(1.05); }
         
-        /* АНИМАЦИИ */
-        @keyframes deal { 0% { transform: translateY(100px) rotate(-10deg); opacity: 0; } 100% { transform: translateY(0) rotate(0); opacity: 1; } }
-        .card.deal { animation: deal 0.6s ease-out; }
-        
-        .history { margin-top: 20px; }
-        .history-item { 
-            background: rgba(255,255,255,0.05); padding: 10px 15px; 
-            border-radius: 10px; margin: 5px 0; font-size: 14px; opacity: 0.8;
-        }
+        .screen { display: none; }
+        .screen.active { display: block; }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>🃏 Poker Pro</h1>
-        <div id="balance">Баланс: 10,000</div>
+        <div id="balance">Баланс: 10,000 фишек</div>
+        <div>Комната: <span id="roomId">-----</span></div>
     </div>
 
     <div class="container">
         <!-- ЛОББИ -->
-        <div class="lobby game-screen" id="lobbyScreen">
-            <h2>🎮 Готов к игре?</h2>
-            <div class="empty-state">
-                <p>Texas Hold'em</p>
-                <p>Ставка: 50 фишек | Макс. 8 игроков</p>
-            </div>
-            <button class="play-btn" onclick="startNewGame()">
-                🚀 Новая игра
+        <div class="lobby screen active" id="lobbyScreen">
+            <h2>🎮 Создать комнату</h2>
+            <p style="opacity: 0.8; margin: 20px 0;">Приглашайте друзей по коду комнаты</p>
+            <button class="play-btn" onclick="createRoom()">
+                🚀 Создать комнату
             </button>
-            <p style="opacity: 0.6; font-size: 14px;">Все действия внутри WebApp</p>
+            <p style="font-size: 14px; opacity: 0.6;">Макс. 8 игроков</p>
+        </div>
+
+        <!-- ОЖИДАНИЕ ИГРОКОВ -->
+        <div class="room screen" id="roomScreen">
+            <h2>🎯 Комната создана!</h2>
+            <div class="room-code" id="roomCode">ABC123</div>
+            <p style="opacity: 0.8;">Поделитесь кодом с друзьями:</p>
+            <div class="players-waiting">
+                <h3>Игроки (1/8)</h3>
+                <div id="playerSlots"></div>
+                <div style="margin-top: 20px;">
+                    <span class="waiting-animation">⏳ Ожидание игроков...</span>
+                </div>
+            </div>
+            <button class="play-btn" onclick="startGameWhenReady()" id="startBtn" style="display: none;">
+                🎮 Начать игру
+            </button>
         </div>
 
         <!-- ИГРА -->
-        <div class="game" id="gameScreen">
+        <div class="game screen" id="gameScreen">
             <div class="table">
-                <div class="status" id="gameStatus">Раздача карт...</div>
-                <div class="pot" id="pot">Банк: 0</div>
+                <div class="status" id="gameStatus">Игра началась!</div>
+                <div class="pot" id="pot">Банк: 400 фишек</div>
                 <div class="cards" id="communityCards"></div>
-                <div class="action-bar" id="actionButtons" style="display: none;">
+                <div class="action-bar" id="actionButtons">
                     <button class="btn fold" onclick="playerAction('fold')">🗑️ Фолд</button>
-                    <button class="btn call" onclick="playerAction('call')">✅ Колл</button>
+                    <button class="btn call" onclick="playerAction('call')">✅ Колл (50)</button>
                     <button class="btn raise" onclick="playerAction('raise')">📈 Рейз</button>
                 </div>
-                <div class="history" id="history"></div>
             </div>
         </div>
     </div>
@@ -131,166 +123,108 @@
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
-        tg.MainButton.setText("🔄 Новая раздача").setColor('#10B981').onClick(startNewGame);
+        tg.MainButton.setText("🏠 В лобби").setColor('#10B981').onClick(() => showScreen('lobbyScreen'));
 
-        // Игровое состояние
-        let gameState = {
-            pot: 0,
-            currentBet: 50,
-            playerChips: 10000,
-            round: 'preflop',
-            communityCards: [],
-            history: [],
-            playerHand: []
+        let room = {
+            id: '',
+            players: 1,
+            maxPlayers: 8,
+            ready: false
         };
 
-        const suits = ['♠️', '♥️', '♦️', '♣️'];
-        const ranks = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
-
-        // Инициализация
         const user = tg.initDataUnsafe?.user || {};
-        document.getElementById('balance').textContent = `Баланс: ${gameState.playerChips}`;
+        document.getElementById('balance').textContent = `Баланс: 10,000 (${user.first_name || 'Игрок'})`;
 
-        // Новая игра
-        function startNewGame() {
-            tg.MainButton.setText("🔄 Новая раздача");
-            showScreen('lobbyScreen');
-            tg.HapticFeedback.impactOccurred('medium');
-        }
-
-        function showScreen(screenId) {
-            document.querySelectorAll('.game-screen').forEach(s => s.style.display = 'none');
-            document.getElementById(screenId).style.display = 'block';
-        }
-
-        // Начать полноценную игру
-        function beginGame() {
-            showScreen('gameScreen');
-            tg.MainButton.setText("🏠 Главное меню");
-            
-            // Инициализация новой раздачи
-            gameState = {
-                pot: 250,
-                currentBet: 50,
-                playerChips: 10000,
-                round: 'preflop',
-                communityCards: [],
-                history: [],
-                playerHand: []
-            };
-            
-            updateDisplay();
-            dealPlayerHand();
-            setTimeout(() => nextRound(), 1500);
-        }
-
-        // Раздача карманных карт
-        function dealPlayerHand() {
-            gameState.playerHand = [
-                { suit: suits[Math.floor(Math.random()*4)], rank: ranks[Math.floor(Math.random()*13)] },
-                { suit: suits[Math.floor(Math.random()*4)], rank: ranks[Math.floor(Math.random()*13)] }
-            ];
-            gameState.history.push(`Раздано: ${gameState.playerHand[0].suit}${gameState.playerHand[0].rank} ${gameState.playerHand[1].suit}${gameState.playerHand[1].rank}`);
-        }
-
-        // Следующий раунд
-        function nextRound() {
-            const rounds = ['preflop', 'flop', 'turn', 'river'];
-            const currentIndex = rounds.indexOf(gameState.round);
-            
-            if (currentIndex < rounds.length - 1) {
-                gameState.round = rounds[currentIndex + 1];
-                
-                if (gameState.round === 'flop') {
-                    gameState.communityCards = generateCommunityCards(3);
-                } else if (gameState.round === 'turn') {
-                    gameState.communityCards.push(generateCommunityCards(1)[0]);
-                } else if (gameState.round === 'river') {
-                    gameState.communityCards.push(generateCommunityCards(1)[0]);
-                }
-                
-                gameState.history.push(`Раунд: ${gameState.round.toUpperCase()}`);
-                updateDisplay();
-                
-                if (gameState.round === 'river') {
-                    setTimeout(showdown, 2000);
-                } else {
-                    setTimeout(() => nextRound(), 3000);
-                }
-            }
-        }
-
-        // Действие игрока
-        function playerAction(action) {
+        // Создать комнату
+        function createRoom() {
             tg.HapticFeedback.impactOccurred('heavy');
             
-            gameState.history.push(`Вы: ${action.toUpperCase()}`);
+            // Генерация кода комнаты
+            room.id = 'ROOM' + Math.random().toString(36).substr(2, 4).toUpperCase();
+            room.players = 1;
             
-            if (action === 'fold') {
-                gameState.history.push('Вы сбросили карты! Новая раздача...');
-                setTimeout(startNewGame, 1500);
-                return;
+            document.getElementById('roomCode').textContent = room.id;
+            document.getElementById('roomId').textContent = room.id;
+            
+            showScreen('roomScreen');
+            updatePlayerSlots();
+            
+            tg.showAlert(`✅ Комната ${room.id} создана!\nПоделитесь кодом с друзьями!`);
+            
+            // Симуляция подключения игроков
+            simulatePlayersJoining();
+        }
+
+        // Симуляция подключения игроков
+        function simulatePlayersJoining() {
+            let joinInterval = setInterval(() => {
+                if (room.players < room.maxPlayers) {
+                    room.players++;
+                    updatePlayerSlots();
+                    tg.HapticFeedback.notificationOccurred('error');
+                    
+                    if (room.players >= 4) { // Минимум 4 игрока
+                        document.getElementById('startBtn').style.display = 'block';
+                    }
+                } else {
+                    clearInterval(joinInterval);
+                }
+            }, 3000); // Игрок каждые 3 секунды
+        }
+
+        // Обновить слоты игроков
+        function updatePlayerSlots() {
+            const slots = document.getElementById('playerSlots');
+            slots.innerHTML = '';
+            
+            for (let i = 0; i < room.maxPlayers; i++) {
+                const slot = document.createElement('div');
+                slot.className = `player-slot ${i < room.players ? 'active' : ''}`;
+                if (i < room.players) {
+                    slot.innerHTML = '<div class="player-avatar"></div>';
+                }
+                slots.appendChild(slot);
             }
-            
-            document.getElementById('actionButtons').style.display = 'none';
-            document.getElementById('gameStatus').textContent = `Действие: ${action.toUpperCase()} | Следующий раунд...`;
-            
-            setTimeout(() => {
-                nextRound();
-            }, 1000);
         }
 
-        // Обновить дисплей
-        function updateDisplay() {
-            document.getElementById('pot').textContent = `Банк: ${gameState.pot} фишек`;
-            document.getElementById('gameStatus').textContent = 
-                `Раунд: ${gameState.round.toUpperCase()} | Ставка: ${gameState.currentBet}`;
+        // Начать игру
+        function startGameWhenReady() {
+            tg.HapticFeedback.impactOccurred('heavy');
+            showScreen('gameScreen');
+            document.getElementById('gameStatus').textContent = '🎮 Раздача карт...';
             
-            // Общие карты
-            const cardsContainer = document.getElementById('communityCards');
-            cardsContainer.innerHTML = '';
-            gameState.communityCards.forEach((card, i) => {
-                setTimeout(() => {
-                    const cardEl = document.createElement('div');
-                    cardEl.className = `card deal suit-${card.suit === '♠️' || card.suit === '♣️' ? 'spade' : 'heart'}`;
-                    cardEl.innerHTML = `${card.suit}<br>${card.rank}`;
-                    cardsContainer.appendChild(cardEl);
-                }, i * 200);
-            });
-            
-            // История
-            const historyEl = document.getElementById('history');
-            historyEl.innerHTML = gameState.history.slice(-5).map(h => `<div class="history-item">${h}</div>`).join('');
-            
-            // Кнопки действий
             setTimeout(() => {
+                document.getElementById('gameStatus').textContent = '✅ Ваша очередь действовать!';
                 document.getElementById('actionButtons').style.display = 'flex';
-            }, 1000);
+            }, 1500);
         }
 
-        // Шоудаун
-        function showdown() {
-            document.getElementById('gameStatus').textContent = '🎉 ШОУДАУН! Вы выиграли!';
+        // Действия игрока
+        function playerAction(action) {
+            tg.HapticFeedback.impactOccurred('heavy');
             document.getElementById('actionButtons').style.display = 'none';
-            tg.HapticFeedback.notificationOccurred('error');
-            tg.showAlert('Поздравляем! Вы выиграли банк!');
+            
+            const messages = {
+                'fold': '🗑️ Вы сбросили карты!',
+                'call': '✅ Колл выполнен!',
+                'raise': '📈 Рейз выполнен!'
+            };
+            
+            document.getElementById('gameStatus').textContent = messages[action];
+            
+            setTimeout(() => {
+                showScreen('roomScreen');
+                tg.showAlert(`${action.toUpperCase()}! Новая раздача через 3 сек...`);
+                setTimeout(createRoom, 3000);
+            }, 2000);
         }
 
-        // Генерация карт
-        function generateCommunityCards(count) {
-            return Array(count).fill().map(() => ({
-                suit: suits[Math.floor(Math.random()*4)],
-                rank: ranks[Math.floor(Math.random()*13)]
-            }));
+        // Показать экран
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
         }
 
-        // Старт по клику "Играть в покер"
-        function startPokerGame() {
-            beginGame();
-        }
-
-        // Автозапуск при открытии
-        tg.MainButton.onClick(startPokerGame);
         tg.ready();
     </script>
 </body>
